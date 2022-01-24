@@ -293,9 +293,23 @@ void main(void)
 		return;
 	}
 
+  // initialize button libraries
 	err = dk_buttons_init(button_handler);
 	if (err) {
 		LOG_ERR("Failed to initialize DK library, error: %d", err);
+	}
+
+  // initialize LED libraries
+  err = dk_leds_init();
+	if (err != 0) {
+		LOG_ERR("Failed to initialize LED library, error: %d", err);
+	} else {
+		// initialize to unconnected state.
+		LOG_INF("LED library initialized");
+		err = dk_set_led(0, 0);
+		if (err != 0) {
+			LOG_ERR("failed to set LED, %d", err);
+		}
 	}
 
 	err = lte_connect();
@@ -339,6 +353,6 @@ void main(void)
 #if defined(CONFIG_MULTICELL_LOCATION_SERVICE_POLTE)
 		request_location(MULTICELL_SERVICE_POLTE, "Polte");
 #endif
-		request_location(MULTICELL_SERVICE_ANY, "Any");
+		// request_location(MULTICELL_SERVICE_ANY, "Any");
 	}
 }
